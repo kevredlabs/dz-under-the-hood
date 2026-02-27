@@ -93,7 +93,7 @@ export function Layout() {
               DoubleZero
             </a>
           </p>
-          <p className="font-mono">Built for developers, by developers</p>
+          <p className="font-mono">made by <a href="https://kevred.com" target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:underline">kevred.com</a></p>
         </div>
       </footer>
     </div>
