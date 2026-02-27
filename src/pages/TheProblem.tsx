@@ -109,6 +109,28 @@ export function TheProblem() {
             by providing an optimized overlay for inter-validator communication.
           </p>
         </FadeInSection>
+
+        <FadeInSection>
+          <div className="rounded-lg border border-zinc-800 bg-zinc-900/50 p-6">
+            <p className="font-mono text-xs text-zinc-500 mb-3">WHO'S BEHIND THIS</p>
+            <p className="text-zinc-400 leading-relaxed mb-3">
+              DoubleZero was co-founded by{' '}
+              <strong className="text-zinc-200">Austin Federa</strong> (former Head of
+              Strategy at the Solana Foundation),{' '}
+              <strong className="text-zinc-200">Andrew McConnell</strong>, and{' '}
+              <strong className="text-zinc-200">Mateo Ward</strong>. In March 2025, the
+              DoubleZero Foundation raised{' '}
+              <strong className="text-zinc-200">$28 million</strong> in a round led by
+              Multicoin Capital and Dragonfly Capital, with participation from Foundation
+              Capital, Reciprocal Ventures, DBA, Borderless Capital, and others.
+            </p>
+            <p className="text-zinc-400 leading-relaxed">
+              The network launched its mainnet-beta across seven cities (Singapore, Tokyo,
+              Los Angeles, New York, London, Amsterdam, Frankfurt) with Solana validators
+              and RPC nodes, and has been expanding since.
+            </p>
+          </div>
+        </FadeInSection>
       </div>
     </div>
   )

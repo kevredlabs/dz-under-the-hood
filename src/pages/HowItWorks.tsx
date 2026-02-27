@@ -120,6 +120,29 @@ export function HowItWorks() {
             </p>
           </div>
         </FadeInSection>
+
+        <FadeInSection>
+          <h2 className="text-2xl font-bold mb-4">Not Just Validators — RPC Nodes Too</h2>
+          <p className="text-zinc-400 leading-relaxed mb-4">
+            The walkthrough above focuses on consensus, but DoubleZero serves{' '}
+            <strong className="text-zinc-200">RPC nodes</strong> just as well. RPC nodes
+            are the read/write gateway for wallets, dApps, and indexers — they need the
+            same block data validators receive, as fast as possible. A slow RPC means stale
+            reads, failed simulations, and laggy UIs.
+          </p>
+          <p className="text-zinc-400 leading-relaxed mb-4">
+            By connecting RPC nodes to Edge DZDs, they receive shreds and blocks through
+            the same low-jitter fiber mesh — without competing for bandwidth on the public
+            internet. They also benefit from the same hardware-level deduplication: no
+            duplicate shreds to process, no malformed packets to discard.
+          </p>
+          <p className="text-zinc-400 leading-relaxed">
+            For RPC providers running at scale (Helius, Triton, etc.), this translates
+            directly into faster tip-of-chain data, more reliable{' '}
+            <code className="text-cyan-400">sendTransaction</code> delivery, and lower
+            infrastructure costs from reduced junk traffic.
+          </p>
+        </FadeInSection>
       </div>
     </div>
   )

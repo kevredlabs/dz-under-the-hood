@@ -355,6 +355,64 @@ ip tunnel show
             </div>
           </div>
 
+          <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-5 mb-6 overflow-x-auto">
+            <svg viewBox="0 0 680 260" className="w-full h-auto">
+              <defs>
+                <marker id="arr-violet" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto">
+                  <polygon points="0 0, 7 2.5, 0 5" fill="#a78bfa" />
+                </marker>
+                <marker id="arr-mcast-blue" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto">
+                  <polygon points="0 0, 7 2.5, 0 5" fill="#60a5fa" />
+                </marker>
+              </defs>
+
+              {/* Publisher (leader) */}
+              <rect x={20} y={95} width={120} height={50} rx={8} fill="#18181b" stroke="#a78bfa" strokeWidth={1.5} />
+              <text x={80} y={116} textAnchor="middle" fill="#a78bfa" style={{ fontSize: '10px', fontWeight: 600, fontFamily: 'monospace' }}>Block Leader</text>
+              <text x={80} y={132} textAnchor="middle" fill="#71717a" style={{ fontSize: '8px', fontFamily: 'monospace' }}>publisher</text>
+
+              {/* Edge DZD */}
+              <rect x={220} y={85} width={100} height={70} rx={8} fill="#18181b" stroke="#34d399" strokeWidth={1.5} />
+              <text x={270} y={110} textAnchor="middle" fill="#34d399" style={{ fontSize: '10px', fontWeight: 600, fontFamily: 'monospace' }}>Edge DZD</text>
+              <text x={270} y={126} textAnchor="middle" fill="#71717a" style={{ fontSize: '8px', fontFamily: 'monospace' }}>dedup +</text>
+              <text x={270} y={138} textAnchor="middle" fill="#71717a" style={{ fontSize: '8px', fontFamily: 'monospace' }}>replicate</text>
+
+              {/* Arrow: leader -> DZD */}
+              <line x1={140} y1={120} x2={215} y2={120} stroke="#a78bfa" strokeWidth={1.5} markerEnd="url(#arr-violet)" />
+              <text x={178} y={112} textAnchor="middle" fill="#a78bfa" opacity={0.6} style={{ fontSize: '7px', fontFamily: 'monospace' }}>shreds</text>
+
+              {/* Fan-out lines from DZD to subscribers */}
+              {/* Subscriber 1 - Validator */}
+              <rect x={440} y={15} width={120} height={45} rx={8} fill="#18181b" stroke="#60a5fa" strokeWidth={1.5} />
+              <text x={500} y={34} textAnchor="middle" fill="#60a5fa" style={{ fontSize: '9px', fontWeight: 600, fontFamily: 'monospace' }}>Validator A</text>
+              <text x={500} y={48} textAnchor="middle" fill="#71717a" style={{ fontSize: '7px', fontFamily: 'monospace' }}>subscriber</text>
+              <line x1={320} y1={110} x2={435} y2={38} stroke="#60a5fa" strokeWidth={1} strokeDasharray="4 2" markerEnd="url(#arr-mcast-blue)" />
+
+              {/* Subscriber 2 - Validator */}
+              <rect x={440} y={80} width={120} height={45} rx={8} fill="#18181b" stroke="#60a5fa" strokeWidth={1.5} />
+              <text x={500} y={99} textAnchor="middle" fill="#60a5fa" style={{ fontSize: '9px', fontWeight: 600, fontFamily: 'monospace' }}>Validator B</text>
+              <text x={500} y={113} textAnchor="middle" fill="#71717a" style={{ fontSize: '7px', fontFamily: 'monospace' }}>subscriber</text>
+              <line x1={320} y1={118} x2={435} y2={102} stroke="#60a5fa" strokeWidth={1} strokeDasharray="4 2" markerEnd="url(#arr-mcast-blue)" />
+
+              {/* Subscriber 3 - RPC */}
+              <rect x={440} y={145} width={120} height={45} rx={8} fill="#18181b" stroke="#22d3ee" strokeWidth={1.5} />
+              <text x={500} y={164} textAnchor="middle" fill="#22d3ee" style={{ fontSize: '9px', fontWeight: 600, fontFamily: 'monospace' }}>RPC Node</text>
+              <text x={500} y={178} textAnchor="middle" fill="#71717a" style={{ fontSize: '7px', fontFamily: 'monospace' }}>subscriber</text>
+              <line x1={320} y1={125} x2={435} y2={167} stroke="#60a5fa" strokeWidth={1} strokeDasharray="4 2" markerEnd="url(#arr-mcast-blue)" />
+
+              {/* Subscriber 4 - Validator */}
+              <rect x={440} y={210} width={120} height={45} rx={8} fill="#18181b" stroke="#60a5fa" strokeWidth={1.5} />
+              <text x={500} y={229} textAnchor="middle" fill="#60a5fa" style={{ fontSize: '9px', fontWeight: 600, fontFamily: 'monospace' }}>Validator C</text>
+              <text x={500} y={243} textAnchor="middle" fill="#71717a" style={{ fontSize: '7px', fontFamily: 'monospace' }}>subscriber</text>
+              <line x1={320} y1={130} x2={435} y2={232} stroke="#60a5fa" strokeWidth={1} strokeDasharray="4 2" markerEnd="url(#arr-mcast-blue)" />
+
+              {/* Label */}
+              <text x={380} y={75} textAnchor="middle" fill="#52525b" style={{ fontSize: '8px', fontFamily: 'monospace' }}>
+                one packet in → N copies out
+              </text>
+            </svg>
+          </div>
+
           <CodeBlock
             title="Multicast connection"
             code={`# Connect as a multicast subscriber

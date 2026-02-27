@@ -126,6 +126,36 @@ export const glossaryTerms: GlossaryTerm[] = [
     category: 'onchain',
   },
   {
+    term: 'VXLAN (Virtual Extensible LAN)',
+    definition:
+      'An overlay technology that encapsulates Ethernet frames inside UDP packets (port 4789). Identified by a 24-bit VNI supporting up to 16 million virtual networks. DoubleZero uses VXLAN to create shared Layer 2 segments between DZDs across continents.',
+    category: 'networking',
+  },
+  {
+    term: 'IS-IS (Intermediate System to Intermediate System)',
+    definition:
+      'A link-state routing protocol used for fast convergence within the DoubleZero backbone. While BGP handles inter-DZD policy-based routing, IS-IS provides rapid internal path computation.',
+    category: 'networking',
+  },
+  {
+    term: 'FPGA (Field Programmable Gate Array)',
+    definition:
+      'A hardware chip that can be reprogrammed for custom packet processing logic. DZDs use FPGAs for line-rate edge filtering — deduplication, format validation, and rate limiting — with no CPU overhead.',
+    category: 'infrastructure',
+  },
+  {
+    term: 'Shred',
+    definition:
+      'A data fragment of a Solana block. Blocks are split into shreds for distribution via Turbine. Shreds are the primary unit of data that flows through the DoubleZero network between validators.',
+    category: 'networking',
+  },
+  {
+    term: 'Turbine',
+    definition:
+      'Solana\'s block propagation protocol. Distributes shreds in a tree structure across validators. Retransmissions at multiple tree levels can produce duplicate shreds — a key reason DZ edge filtering exists.',
+    category: 'networking',
+  },
+  {
     term: 'BGP (Border Gateway Protocol)',
     definition:
       'The routing protocol used for exchanging routing information between networks on the internet. DoubleZero uses BGP internally with ASN 65342.',
