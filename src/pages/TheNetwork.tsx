@@ -1,3 +1,4 @@
+import type React from 'react'
 import { Network } from 'lucide-react'
 import { SectionHero } from '../components/ui/SectionHero'
 import { FadeInSection } from '../components/animations/FadeInSection'
@@ -57,7 +58,7 @@ function VxlanDiagram() {
             { w: 55, label: 'Inner ETH', color: '#164e63' },
             { w: 55, label: 'Inner IP', color: '#065f46' },
             { w: 50, label: 'Payload', color: '#065f46' },
-          ].reduce<{ els: JSX.Element[], offset: number }>((acc, seg, i) => {
+          ].reduce<{ els: React.ReactNode[], offset: number }>((acc, seg, i) => {
             acc.els.push(
               <g key={i}>
                 <rect x={acc.offset} y={0} width={seg.w} height={22} rx={3} fill={seg.color} stroke="#52525b" strokeWidth={0.5} />
