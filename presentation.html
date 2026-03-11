@@ -1,0 +1,566 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DZ Under The Hood</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/black.css">
+  <style>
+    :root {
+      --r-background-color: #09090b;
+      --r-main-color: #d4d4d8;
+      --r-heading-color: #fafafa;
+      --r-link-color: #22d3ee;
+      --r-link-color-hover: #67e8f9;
+      --r-heading-font: 'Inter', system-ui, sans-serif;
+      --r-main-font: 'Inter', system-ui, sans-serif;
+      --r-code-font: 'JetBrains Mono', 'Fira Code', monospace;
+      --r-heading-text-transform: none;
+    }
+    .reveal { font-size: 28px; }
+    .reveal h1 { font-size: 2.4em; font-weight: 800; }
+    .reveal h2 { font-size: 1.6em; font-weight: 700; margin-bottom: 0.6em; }
+    .reveal h3 { font-size: 1.1em; font-weight: 600; color: #a1a1aa; }
+    .reveal p, .reveal li { line-height: 1.6; }
+    .reveal ul { list-style: none; padding-left: 0; }
+    .reveal ul li { position: relative; padding-left: 1.4em; margin-bottom: 0.4em; }
+    .reveal ul li::before { content: '→'; position: absolute; left: 0; color: #22d3ee; font-weight: 600; }
+    .reveal .small { font-size: 0.65em; color: #71717a; }
+    .reveal code { font-family: var(--r-code-font); background: #18181b; padding: 0.15em 0.4em; border-radius: 4px; font-size: 0.85em; color: #22d3ee; }
+    .reveal .highlight { color: #22d3ee; font-weight: 600; }
+    .reveal .highlight-green { color: #34d399; font-weight: 600; }
+    .reveal .highlight-amber { color: #fbbf24; font-weight: 600; }
+    .reveal .highlight-red { color: #f87171; font-weight: 600; }
+    .reveal .highlight-violet { color: #a78bfa; font-weight: 600; }
+    .reveal .dim { color: #71717a; }
+    .reveal .gradient-text {
+      background: linear-gradient(135deg, #22d3ee, #34d399);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .card {
+      background: #18181b;
+      border: 1px solid #27272a;
+      border-radius: 12px;
+      padding: 1em 1.2em;
+      text-align: left;
+      font-size: 0.8em;
+    }
+    .card-label {
+      font-family: var(--r-code-font);
+      font-size: 0.7em;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.4em;
+    }
+    .card p { margin: 0; color: #a1a1aa; font-size: 0.9em; }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8em; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.8em; }
+
+    .prereq-box {
+      background: #18181b;
+      border: 1px solid #27272a;
+      border-radius: 12px;
+      padding: 1.2em;
+      text-align: center;
+    }
+    .prereq-box .number {
+      font-family: var(--r-code-font);
+      font-size: 2em;
+      font-weight: 800;
+      line-height: 1;
+      margin-bottom: 0.3em;
+    }
+    .prereq-box h4 {
+      font-size: 0.85em;
+      font-weight: 700;
+      margin: 0 0 0.3em 0;
+      color: #fafafa;
+    }
+    .prereq-box p { font-size: 0.65em; color: #71717a; margin: 0; }
+
+    .arrow-chain {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.3em;
+      font-family: var(--r-code-font);
+      font-size: 0.75em;
+      flex-wrap: wrap;
+    }
+    .arrow-chain .node {
+      background: #18181b;
+      border: 1px solid #27272a;
+      border-radius: 8px;
+      padding: 0.4em 0.7em;
+    }
+    .arrow-chain .arr { color: #3f3f46; }
+
+    .step-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.8em;
+      text-align: left;
+      margin-bottom: 0.5em;
+    }
+    .step-dot {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--r-code-font);
+      font-size: 0.65em;
+      font-weight: 700;
+      color: #09090b;
+      margin-top: 0.1em;
+    }
+    .step-row p { margin: 0; font-size: 0.75em; color: #a1a1aa; }
+    .step-row strong { color: #fafafa; font-size: 0.85em; }
+
+    .vs-grid {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 0.6em;
+      align-items: start;
+    }
+    .vs-divider {
+      color: #3f3f46;
+      font-size: 1.5em;
+      font-weight: 800;
+      padding-top: 1em;
+    }
+
+    .closing-chain {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4em;
+      align-items: flex-start;
+      font-size: 0.8em;
+    }
+    .closing-chain .row {
+      display: flex;
+      align-items: center;
+      gap: 0.5em;
+    }
+    .closing-chain .icon { font-size: 1.2em; }
+
+    .source-link {
+      font-size: 0.55em;
+      color: #52525b;
+      margin-top: 1.5em;
+    }
+    .source-link a { color: #22d3ee; text-decoration: none; }
+    .source-link a:hover { text-decoration: underline; }
+
+    .slide-number { display: none !important; }
+  </style>
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+      <!-- SLIDE 1: Title -->
+      <section>
+        <h1>
+          <span class="gradient-text">DZ</span> Under The Hood
+        </h1>
+        <h3 style="margin-top: 0.8em;">How DoubleZero powers the next era of Solana</h3>
+        <p class="small" style="margin-top: 2em;">
+          <a href="https://kevred.com" target="_blank" style="color: #22d3ee;">kevred.com</a>
+        </p>
+      </section>
+
+      <!-- SLIDE 2: The Vision -->
+      <section>
+        <h2>The Vision: <span class="highlight">Decentralized Nasdaq</span></h2>
+        <p style="font-size: 0.8em; color: #a1a1aa; margin-bottom: 1.2em;">
+          Toly & Max Resnick (Anza) — pour battre le NYSE sur les spreads,<br>
+          3 prérequis sont identifiés :
+        </p>
+        <div class="grid-3">
+          <div class="prereq-box">
+            <div class="number highlight-amber">1</div>
+            <h4>Ordering</h4>
+            <p>Cancels before takes — nouvelle politique d'ordonnancement des transactions</p>
+          </div>
+          <div class="prereq-box">
+            <div class="number highlight-violet">2</div>
+            <h4>Multiple Leaders</h4>
+            <p>Concurrent leaders pour éliminer la censure unilatérale</p>
+          </div>
+          <div class="prereq-box" style="border-color: #22d3ee40;">
+            <div class="number highlight">3</div>
+            <h4>Wallclock Fairness</h4>
+            <p>Les leaders doivent commit au même instant → exige un réseau à <span class="highlight">jitter minimal</span></p>
+          </div>
+        </div>
+        <div class="source-link">
+          Source : <a href="https://www.anza.xyz/blog/the-path-to-decentralized-nasdaq" target="_blank">anza.xyz — The Path to Decentralized Nasdaq</a>
+        </div>
+      </section>
+
+      <!-- SLIDE 3: The Problem -->
+      <section>
+        <h2>The Problem: <span class="highlight-red">the public internet can't do #3</span></h2>
+        <div class="vs-grid">
+          <div class="card" style="border-color: #f8717130;">
+            <div class="card-label highlight-red">Public Internet</div>
+            <ul style="font-size: 0.85em;">
+              <li>BGP optimise la reachability, pas la vitesse</li>
+              <li>10-15 hops ISP par paire de validators</li>
+              <li>Jitter imprévisible (50-200ms)</li>
+              <li>Chaque validator déduplique seul (×1000)</li>
+            </ul>
+          </div>
+          <div class="vs-divider">→</div>
+          <div class="card" style="border-color: #22d3ee30;">
+            <div class="card-label highlight">Conséquences</div>
+            <ul style="font-size: 0.85em;">
+              <li>Wallclock fairness <strong>impossible</strong></li>
+              <li>Slots manqués, votes désynchronisés</li>
+              <li>Market makers structurellement désavantagés</li>
+              <li>Spreads larges → pire prix pour tous</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- SLIDE 4: What is DoubleZero -->
+      <section>
+        <h2>What is <span class="gradient-text">DoubleZero</span> ?</h2>
+        <ul style="font-size: 0.85em; margin-bottom: 1.2em;">
+          <li>Réseau fibre <strong>privé et décentralisé</strong> — overlay sur de la fibre sous-utilisée</li>
+          <li>Contributeurs fournissent bande passante + hardware, rémunérés en <code>2Z</code></li>
+          <li>Validators et RPC nodes se connectent via <span class="highlight-green">Edge DZDs</span></li>
+          <li>Optimise le trafic <strong>validator ↔ validator</strong> : blocs, shreds, votes</li>
+        </ul>
+        <div class="card" style="text-align: center; font-size: 0.75em; color: #71717a;">
+          <span class="dim">Fondé par</span>
+          <strong style="color: #fafafa;"> Austin Federa</strong>
+          <span class="dim">(ex-Solana Foundation),</span>
+          <strong style="color: #fafafa;"> Andrew McConnell</strong><span class="dim">,</span>
+          <strong style="color: #fafafa;"> Mateo Ward</strong>
+          <br>
+          <span class="dim">$28M levés — Multicoin Capital, Dragonfly Capital</span>
+          <br>
+          <span class="dim">Mainnet-beta live : SIN, TYO, LAX, NYC, LON, AMS, FRA</span>
+        </div>
+      </section>
+
+      <!-- SLIDE 5: Network Architecture -->
+      <section>
+        <h2>Architecture réseau</h2>
+        <div class="grid-2" style="margin-bottom: 1em;">
+          <div class="card">
+            <div class="card-label highlight-green">DZD — DoubleZero Device</div>
+            <p>Switch Arista physique aux extrémités de chaque lien fibre. Exécute le software DZ Agent.</p>
+          </div>
+          <div class="card">
+            <div class="card-label highlight">DZX — DoubleZero Exchange</div>
+            <p>Hub d'interconnexion où les liens de différents contributeurs se croisent. Grandes métropoles.</p>
+          </div>
+        </div>
+        <div class="grid-3">
+          <div class="card" style="border-color: #34d39930;">
+            <div class="card-label highlight-green">Edge</div>
+            <p>Connecte validators + RPC au réseau</p>
+          </div>
+          <div class="card" style="border-color: #fbbf2430;">
+            <div class="card-label highlight-amber">Transit</div>
+            <p>Backbone only — routage pur entre DZDs</p>
+          </div>
+          <div class="card" style="border-color: #60a5fa30;">
+            <div class="card-label" style="color: #60a5fa;">Hybrid</div>
+            <p>Edge + Transit combinés</p>
+          </div>
+        </div>
+        <div class="grid-2" style="margin-top: 0.8em;">
+          <div class="card">
+            <div class="card-label highlight-violet">WAN Link</div>
+            <p>Entre 2 DZDs du <em>même</em> contributeur</p>
+          </div>
+          <div class="card">
+            <div class="card-label highlight">DZX Link</div>
+            <p>Entre DZDs de contributeurs <em>différents</em>, au DZX</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- SLIDE 6: VXLAN, BGP, VRF -->
+      <section>
+        <h2>Les briques : <span class="highlight">VXLAN</span>, <span class="highlight-violet">BGP</span>, <span class="highlight-amber">VRF</span></h2>
+        <div style="display: flex; flex-direction: column; gap: 0.8em;">
+          <div class="card" style="border-color: #22d3ee30;">
+            <div class="card-label highlight">VXLAN — Overlay L2</div>
+            <p>Encapsule des trames Ethernet dans UDP:4789. VNI 24-bit = 16M réseaux virtuels.
+              Jumbo frames MTU 9000 pour absorber le ~50 bytes d'overhead.</p>
+          </div>
+          <div class="card" style="border-color: #a78bfa30;">
+            <div class="card-label highlight-violet">BGP — Routage inter-DZD</div>
+            <p>iBGP avec ASN privé 65342. Quand un validator se connecte à un Edge DZD,
+              sa route est propagée automatiquement à tout le mesh. IS-IS en interne pour la convergence rapide.</p>
+          </div>
+          <div class="card" style="border-color: #fbbf2430;">
+            <div class="card-label highlight-amber">VRF — Isolation du trafic</div>
+            <p>Tables de routage isolées sur un même switch :
+              <code>dz-prod</code> (blocs, shreds, votes) vs <code>dz-mgmt</code> (SSH, monitoring).
+              Un spike monitoring ne peut pas affecter le consensus.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- SLIDE 7: How a block propagates -->
+      <section>
+        <h2>Chemin d'un bloc dans le mesh</h2>
+        <div style="display: flex; flex-direction: column; gap: 0.3em;">
+          <div class="step-row">
+            <div class="step-dot" style="background: #a78bfa;">1</div>
+            <div><strong>Leader produit un bloc</strong><p>Split en shreds pour distribution via Turbine</p></div>
+          </div>
+          <div class="step-row">
+            <div class="step-dot" style="background: #22d3ee;">2</div>
+            <div><strong>Shreds entrent dans le mesh DZ</strong><p>Via GRE tunnel (mode IBRL) — pas d'ISP, pas d'internet public</p></div>
+          </div>
+          <div class="step-row">
+            <div class="step-dot" style="background: #34d399;">3</div>
+            <div><strong>Edge Filtering (FPGA)</strong><p>Dédup shreds + validation format + rate limiting — en hardware, à line-rate</p></div>
+          </div>
+          <div class="step-row">
+            <div class="step-dot" style="background: #3b82f6;">4</div>
+            <div><strong>Routage mesh fibre</strong><p>2-4 hops sur fibre dédiée, MTU 9000, routage optimisé</p></div>
+          </div>
+          <div class="step-row">
+            <div class="step-dot" style="background: #fbbf24;">5</div>
+            <div><strong>Livraison aux validators</strong><p>Jitter minimal → shreds arrivent en ordre → reconstruction rapide</p></div>
+          </div>
+          <div class="step-row">
+            <div class="step-dot" style="background: #4ade80;">6</div>
+            <div><strong>Votes consensus propagés retour</strong><p>Tower BFT via le mesh — voting window utilisée efficacement</p></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SLIDE 8: Edge Filtering -->
+      <section>
+        <h2>Edge Filtering : <span class="highlight-green">the killer feature</span></h2>
+        <div class="grid-2" style="margin-bottom: 1em;">
+          <div class="card" style="border-color: #f8717130;">
+            <div class="card-label highlight-red">Sans DZ</div>
+            <p>Chaque validator déduplique seul<br>
+              1000× le même travail redondant<br>
+              CPU gaspillé sur du bruit<br>
+              Qualité de filtrage variable</p>
+          </div>
+          <div class="card" style="border-color: #34d39930;">
+            <div class="card-label highlight-green">Avec DZ</div>
+            <p>Dédup <strong>une fois</strong> à l'edge (FPGA)<br>
+              Tous reçoivent uniquement du clean data<br>
+              CPU libéré pour le consensus<br>
+              Qualité hardware uniforme pour tous</p>
+          </div>
+        </div>
+        <div class="grid-3">
+          <div class="card">
+            <div class="card-label highlight-green">Shred Dedup</div>
+            <p>Duplicats Turbine détectés par signature, droppés</p>
+          </div>
+          <div class="card">
+            <div class="card-label highlight-green">Format Validation</div>
+            <p>Paquets malformés rejetés au niveau réseau</p>
+          </div>
+          <div class="card">
+            <div class="card-label highlight-green">Rate Limiting</div>
+            <p>Par source, anti-flood — protège le consensus</p>
+          </div>
+        </div>
+        <p style="font-size: 0.65em; color: #71717a; margin-top: 1em;">
+          Non-discretionary : pas de censure. Règles uniformes, transparentes, appliquées à tous.
+        </p>
+      </section>
+
+      <!-- SLIDE 9: RPC + Multicast -->
+      <section>
+        <h2>Pas que les validators — <span class="highlight">RPC nodes</span> aussi</h2>
+        <ul style="font-size: 0.85em; margin-bottom: 1.2em;">
+          <li>RPC = gateway lecture/écriture pour wallets, dApps, indexers</li>
+          <li>Mêmes bénéfices : shreds via fibre, dédup partagée, jitter minimal</li>
+          <li>Tip-of-chain plus rapide, <code>sendTransaction</code> plus fiable</li>
+          <li>Moins de junk traffic = coûts infra réduits</li>
+        </ul>
+        <div class="card" style="text-align: center;">
+          <div class="card-label highlight-violet" style="text-align: center;">Multicast</div>
+          <div class="arrow-chain" style="margin-top: 0.5em;">
+            <span class="node" style="border-color: #a78bfa40;">
+              <span class="highlight-violet">Block Leader</span><br>
+              <span class="dim" style="font-size: 0.8em;">publisher</span>
+            </span>
+            <span class="arr">→</span>
+            <span class="node" style="border-color: #34d39940;">
+              <span class="highlight-green">Edge DZD</span><br>
+              <span class="dim" style="font-size: 0.8em;">dedup + replicate</span>
+            </span>
+            <span class="arr">→</span>
+            <span style="display: flex; flex-direction: column; gap: 0.3em;">
+              <span class="node" style="border-color: #60a5fa30;">
+                <span style="color: #60a5fa;">Validator A</span>
+              </span>
+              <span class="node" style="border-color: #60a5fa30;">
+                <span style="color: #60a5fa;">Validator B</span>
+              </span>
+              <span class="node" style="border-color: #22d3ee30;">
+                <span class="highlight">RPC Node</span>
+              </span>
+              <span class="node" style="border-color: #60a5fa30;">
+                <span style="color: #60a5fa;">Validator C</span>
+              </span>
+            </span>
+          </div>
+          <p style="margin-top: 0.5em; font-size: 0.7em;">one packet in → N copies out</p>
+        </div>
+      </section>
+
+      <!-- SLIDE 10: Software Stack -->
+      <section>
+        <h2>Software stack</h2>
+        <div class="arrow-chain" style="margin-bottom: 1.2em;">
+          <span class="node" style="border-color: #3b82f630;"><span style="color: #3b82f6;">Ledger</span></span>
+          <span class="arr">→</span>
+          <span class="node" style="border-color: #a78bfa30;"><span class="highlight-violet">Controller</span></span>
+          <span class="arr">→</span>
+          <span class="node" style="border-color: #22d3ee30;"><span class="highlight">Config Agent</span></span>
+          <span class="arr">→</span>
+          <span class="node" style="border-color: #34d39930;"><span class="highlight-green">DZD</span></span>
+        </div>
+        <div class="grid-2" style="margin-bottom: 0.8em;">
+          <div class="card">
+            <div class="card-label highlight-violet">Controller</div>
+            <p>Lit l'état onchain → dérive la config pour chaque DZD</p>
+          </div>
+          <div class="card">
+            <div class="card-label highlight">Config Agent</div>
+            <p>Tourne sur chaque DZD. Poll → diff → apply</p>
+          </div>
+          <div class="card">
+            <div class="card-label highlight-green">Telemetry Agent</div>
+            <p>TWAMP probes → métriques signées → soumises onchain</p>
+          </div>
+          <div class="card">
+            <div class="card-label highlight-amber">doublezerod</div>
+            <p>Daemon côté validator/RPC. Gère le tunnel GRE + routing</p>
+          </div>
+        </div>
+        <div class="grid-3">
+          <div class="card">
+            <div class="card-label highlight-amber" style="font-size: 0.6em;">IBRL</div>
+            <p style="font-size: 0.8em;">Connexion sans redémarrer le validator</p>
+          </div>
+          <div class="card">
+            <div class="card-label highlight" style="font-size: 0.6em;">CYOA</div>
+            <p style="font-size: 0.8em;">GRE/DIA, Fabric, ou Private Peering</p>
+          </div>
+          <div class="card">
+            <div class="card-label highlight-violet" style="font-size: 0.6em;">Multicast</div>
+            <p style="font-size: 0.8em;">Publisher + Subscriber, combinable avec IBRL</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- SLIDE 11: Onchain Layer -->
+      <section>
+        <h2>Onchain layer</h2>
+        <p style="font-size: 0.8em; color: #a1a1aa; margin-bottom: 1em;">
+          Tout l'état réseau vit onchain — transparent et auditable par tous.
+        </p>
+        <div class="grid-3" style="margin-bottom: 1em;">
+          <div class="card">
+            <div class="card-label highlight">Devices</div>
+            <p>Type, prefixes, interfaces, capacité max</p>
+          </div>
+          <div class="card">
+            <div class="card-label highlight-violet">Links</div>
+            <p>Endpoints, status, paramètres</p>
+          </div>
+          <div class="card">
+            <div class="card-label highlight-green">Telemetry</div>
+            <p>Latence, jitter, packet loss — signé</p>
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-label highlight-amber">Token 2Z</div>
+            <p><strong style="color: #fafafa;">Fees</strong> : validators/RPC paient en SOL (auto-swap) ou 2Z<br>
+              <strong style="color: #fafafa;">Rewards</strong> : contributeurs rémunérés en 2Z pour leur bandwidth</p>
+          </div>
+          <div class="card">
+            <div class="card-label" style="color: #60a5fa;">Clés séparées</div>
+            <p><strong style="color: #fafafa;">Service Key</strong> — identité contributeur (CLI ops)<br>
+              <strong style="color: #fafafa;">Metrics Publisher Key</strong> — signe les métriques (isolée)</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- SLIDE 12: Closing -->
+      <section>
+        <h2>Pourquoi <span class="gradient-text">DoubleZero</span> compte</h2>
+        <div class="closing-chain" style="margin: 1.5em auto; max-width: 700px;">
+          <div class="row">
+            <span class="icon highlight">◆</span>
+            <span><span class="highlight">Wallclock fairness</span> exige un réseau à jitter minimal</span>
+          </div>
+          <div class="row" style="padding-left: 1.5em;">
+            <span class="arr dim">↓</span>
+          </div>
+          <div class="row">
+            <span class="icon highlight-violet">◆</span>
+            <span><span class="highlight-violet">Multiple concurrent leaders</span> exigent wallclock fairness</span>
+          </div>
+          <div class="row" style="padding-left: 1.5em;">
+            <span class="arr dim">↓</span>
+          </div>
+          <div class="row">
+            <span class="icon highlight-amber">◆</span>
+            <span><span class="highlight-amber">Cancels-before-takes</span> exige multiple concurrent leaders</span>
+          </div>
+          <div class="row" style="padding-left: 1.5em;">
+            <span class="arr dim">↓</span>
+          </div>
+          <div class="row">
+            <span class="icon highlight-green">◆</span>
+            <span><span class="highlight-green">Battre le NYSE sur les spreads</span> exige cancels-before-takes</span>
+          </div>
+        </div>
+        <p style="font-size: 1.1em; text-align: center; margin-top: 1.5em; font-weight: 700;">
+          DZ n'est pas un nice-to-have —<br>
+          c'est une <span class="gradient-text">fondation</span> pour le Decentralized Nasdaq.
+        </p>
+        <p class="small" style="margin-top: 2em; text-align: center;">
+          <a href="https://kevred.com" target="_blank" style="color: #22d3ee;">kevred.com</a>
+        </p>
+      </section>
+
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+  <script>
+    Reveal.initialize({
+      hash: true,
+      slideNumber: 'c/t',
+      width: 1280,
+      height: 720,
+      margin: 0.08,
+      transition: 'fade',
+      transitionSpeed: 'fast',
+      controlsTutorial: false,
+    });
+  </script>
+</body>
+</html>
