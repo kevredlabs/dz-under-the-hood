@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DZ Under The Hood</title>
+  <title>Double Zero</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/black.css">
   <style>
@@ -170,7 +170,7 @@
       <!-- SLIDE 1: Title -->
       <section>
         <h1>
-          <span class="gradient-text">DZ</span> Under The Hood
+          <span class="gradient-text">Double Zero</span>
         </h1>
         <h3 style="margin-top: 0.8em;">Comment DoubleZero propulse la prochaine ère de Solana</h3>
         <p class="small" style="margin-top: 2em;">
@@ -212,22 +212,22 @@
         <h2>Le Problème : <span class="highlight-red">l'internet public ne peut pas faire le #3</span></h2>
         <div class="vs-grid">
           <div class="card" style="border-color: #f8717130;">
-            <div class="card-label highlight-red">Internet Public</div>
+            <div class="card-label highlight-red">Internet Public — les faits</div>
             <ul style="font-size: 0.85em;">
               <li>BGP optimise la disponibilité, pas la vitesse</li>
               <li>10-15 sauts FAI par paire de validateurs</li>
-              <li>Jitter imprévisible (50-200ms)</li>
+              <li>Jitter imprévisible (50–200 ms)</li>
               <li>Chaque validateur déduplique seul (×1000)</li>
             </ul>
           </div>
           <div class="vs-divider">→</div>
-          <div class="card" style="border-color: #22d3ee30;">
-            <div class="card-label highlight">Conséquences</div>
+          <div class="card" style="border-color: #f8717130;">
+            <div class="card-label highlight-red">Ce que vous subissez en tant que dev</div>
             <ul style="font-size: 0.85em;">
-              <li>Équité temporelle <strong>impossible</strong></li>
-              <li>Slots ratés, votes désynchronisés</li>
-              <li>Market makers structurellement désavantagés</li>
-              <li>Spreads larges → prix moins bons pour tous</li>
+              <li>Slots ratés → blockhash expiré → <code>BlockhashNotFound</code></li>
+              <li>Logique de retry complexe dans vos apps</li>
+              <li>MEV asymétrique : vos users se font front-runner</li>
+              <li>Données RPC en retard → état onchain périmé</li>
             </ul>
           </div>
         </div>
@@ -236,11 +236,18 @@
       <!-- SLIDE 4: Qu'est-ce que DoubleZero -->
       <section>
         <h2>Qu'est-ce que <span class="gradient-text">DoubleZero</span> ?</h2>
-        <ul style="font-size: 0.85em; margin-bottom: 1.2em;">
+        <div class="card" style="border-color: #22d3ee30; margin-bottom: 1em; text-align: center; padding: 0.8em 1.4em;">
+          <p style="font-size: 0.9em; color: #d4d4d8; margin: 0; line-height: 1.7;">
+            L'internet public, c'est une <span class="highlight-red">route nationale</span> partagée avec tout le monde.<br>
+            DoubleZero, c'est une <span class="highlight-green">autoroute privée</span> réservée aux validateurs Solana —<br>
+            <strong style="color: #fafafa;">plus courte, sans détours, sans embouteillages.</strong>
+          </p>
+        </div>
+        <ul style="font-size: 0.82em; margin-bottom: 1em;">
           <li>Réseau <strong>fibre privé décentralisé</strong> — overlay sur des fibres sous-utilisées</li>
-          <li>Les contributeurs fournissent bande passante + matériel, récompensés en <code>2Z</code></li>
-          <li>Validateurs et nœuds RPC se connectent via des <span class="highlight-green">Edge DZDs</span></li>
-          <li>Optimise le trafic <strong>validateur ↔ validateur</strong> : blocs, shreds, votes</li>
+          <li>Des contributeurs fournissent bande passante + matériel, récompensés en <code>2Z</code></li>
+          <li>Validateurs et nœuds RPC s'y connectent via des points d'entrée dédiés</li>
+          <li>Optimise le trafic critique : blocs, shreds, votes de consensus</li>
         </ul>
         <div class="card" style="text-align: center; font-size: 0.75em; color: #71717a;">
           <span class="dim">Fondé par</span>
@@ -255,64 +262,157 @@
         </div>
       </section>
 
-      <!-- SLIDE 5: Architecture Réseau -->
+      <!-- SLIDE 4b: Impact pour les builders -->
       <section>
-        <h2>Architecture Réseau</h2>
-        <div class="grid-2" style="margin-bottom: 1em;">
-          <div class="card">
-            <div class="card-label highlight-green">DZD — DoubleZero Device</div>
-            <p>Switch Arista physique à chaque extrémité d'un lien fibre. Exécute le logiciel DZ Agent.</p>
-          </div>
-          <div class="card">
-            <div class="card-label highlight">DZX — DoubleZero Exchange</div>
-            <p>Hub d'interconnexion où se rejoignent les liens de différents contributeurs. Grandes métropoles.</p>
-          </div>
-        </div>
-        <div class="grid-3">
+        <h2>Ce que ça change <span class="highlight">pour vous</span></h2>
+        <div class="grid-2" style="margin-bottom: 0.8em;">
           <div class="card" style="border-color: #34d39930;">
-            <div class="card-label highlight-green">Edge</div>
-            <p>Connecte les validateurs + RPC au réseau</p>
+            <div class="card-label highlight-green">Moins de transactions ratées</div>
+            <p>Slot skip rate réduit → votre blockhash reste valide plus longtemps → moins de <code>BlockhashNotFound</code>, moins de retries à gérer dans votre code.</p>
+          </div>
+          <div class="card" style="border-color: #22d3ee30;">
+            <div class="card-label highlight">Confirmation plus rapide</div>
+            <p>Shreds livrés plus vite → blocs confirmés plus tôt → finality accélérée. Vos utilisateurs ne fixent plus un spinner.</p>
+          </div>
+          <div class="card" style="border-color: #a78bfa30;">
+            <div class="card-label highlight-violet">MEV plus équitable</div>
+            <p>L'équité temporelle rend le front-running aveugle structurellement plus difficile. Meilleure protection pour vos utilisateurs et vos protocoles DeFi.</p>
           </div>
           <div class="card" style="border-color: #fbbf2430;">
-            <div class="card-label highlight-amber">Transit</div>
-            <p>Backbone uniquement — routage pur entre DZDs</p>
-          </div>
-          <div class="card" style="border-color: #60a5fa30;">
-            <div class="card-label" style="color: #60a5fa;">Hybride</div>
-            <p>Edge + Transit combinés</p>
+            <div class="card-label highlight-amber">Nouveaux designs possibles</div>
+            <p>Cancel-before-fill, fair sequencing, ordres limites on-chain… Des primitives financières impossibles sans jitter minimal deviennent réalisables.</p>
           </div>
         </div>
-        <div class="grid-2" style="margin-top: 0.8em;">
-          <div class="card">
-            <div class="card-label highlight-violet">WAN Link</div>
-            <p>Entre 2 DZDs du <em>même</em> contributeur</p>
-          </div>
-          <div class="card">
-            <div class="card-label highlight">DZX Link</div>
-            <p>Entre DZDs de contributeurs <em>différents</em>, au niveau du DZX</p>
-          </div>
+        <div class="card" style="text-align:center; font-size:0.78em; border-color: #22d3ee20;">
+          <p style="margin:0; color:#a1a1aa;">DoubleZero est une <strong style="color:#fafafa;">infrastructure de protocole</strong> — vous n'intégrez pas de SDK. Vous en bénéficiez dès que votre RPC ou vos validateurs s'y connectent.</p>
         </div>
       </section>
 
-      <!-- SLIDE 6: VXLAN, BGP, VRF -->
+      <!-- SLIDE 5: Architecture Réseau -->
       <section>
-        <h2>Briques de Base : <span class="highlight">VXLAN</span>, <span class="highlight-violet">BGP</span>, <span class="highlight-amber">VRF</span></h2>
-        <div style="display: flex; flex-direction: column; gap: 0.8em;">
+        <h2>Architecture Réseau</h2>
+        <div class="grid-3" style="margin-bottom: 0.7em; font-size: 0.72em;">
+          <div style="text-align:center;">
+            <span class="highlight-green" style="font-family:var(--r-code-font);font-weight:700;">DZD</span>
+            <span class="dim"> — DoubleZero Device</span><br>
+            <span style="color:#a1a1aa;">Switch Arista physique, point d'entrée/transit du réseau</span>
+          </div>
+          <div style="text-align:center;">
+            <span class="highlight" style="font-family:var(--r-code-font);font-weight:700;">DZX</span>
+            <span class="dim"> — DoubleZero Exchange</span><br>
+            <span style="color:#a1a1aa;">Hub métropolitain reliant les fibres de différents contributeurs</span>
+          </div>
+          <div style="text-align:center;">
+            <span class="highlight-amber" style="font-family:var(--r-code-font);font-weight:700;">WAN / DZX Link</span><br>
+            <span style="color:#a1a1aa;">Liens fibre entre DZDs — même contributeur ou via le DZX</span>
+          </div>
+        </div>
+        <svg viewBox="0 0 820 390" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-height:390px;font-family:'Inter',system-ui,sans-serif;">
+          <!-- Background zones -->
+          <rect x="10" y="30" width="230" height="340" rx="12" fill="#18181b" stroke="#27272a" stroke-width="1"/>
+          <rect x="295" y="80" width="230" height="240" rx="12" fill="#18181b" stroke="#22d3ee" stroke-width="1.5"/>
+          <rect x="580" y="30" width="230" height="340" rx="12" fill="#18181b" stroke="#27272a" stroke-width="1"/>
+
+          <!-- Zone labels -->
+          <text x="125" y="20" text-anchor="middle" font-size="11" fill="#71717a" font-weight="600" letter-spacing="0.05em">CONTRIBUTEUR A</text>
+          <text x="410" y="72" text-anchor="middle" font-size="11" fill="#22d3ee" font-weight="600" letter-spacing="0.05em">DZX — EXCHANGE</text>
+          <text x="695" y="20" text-anchor="middle" font-size="11" fill="#71717a" font-weight="600" letter-spacing="0.05em">CONTRIBUTEUR B</text>
+
+          <!-- DZX central hub -->
+          <rect x="325" y="165" width="170" height="60" rx="10" fill="#0e2a2e" stroke="#22d3ee" stroke-width="2"/>
+          <text x="410" y="191" text-anchor="middle" font-size="13" fill="#22d3ee" font-weight="700">DZX</text>
+          <text x="410" y="208" text-anchor="middle" font-size="10" fill="#71717a">Hub Métropolitain</text>
+
+          <!-- Contributor A — Edge DZD (top) -->
+          <rect x="40" y="65" width="170" height="52" rx="8" fill="#0d2318" stroke="#34d399" stroke-width="1.5"/>
+          <text x="125" y="87" text-anchor="middle" font-size="11" fill="#34d399" font-weight="700">DZD Edge</text>
+          <text x="125" y="103" text-anchor="middle" font-size="9.5" fill="#71717a">Validateurs / RPC</text>
+
+          <!-- Contributor A — Transit DZD (bottom) -->
+          <rect x="40" y="275" width="170" height="52" rx="8" fill="#211a00" stroke="#fbbf24" stroke-width="1.5"/>
+          <text x="125" y="297" text-anchor="middle" font-size="11" fill="#fbbf24" font-weight="700">DZD Transit</text>
+          <text x="125" y="313" text-anchor="middle" font-size="9.5" fill="#71717a">Backbone / Routage</text>
+
+          <!-- Contributor B — Edge DZD (top) -->
+          <rect x="610" y="65" width="170" height="52" rx="8" fill="#0d2318" stroke="#34d399" stroke-width="1.5"/>
+          <text x="695" y="87" text-anchor="middle" font-size="11" fill="#34d399" font-weight="700">DZD Edge</text>
+          <text x="695" y="103" text-anchor="middle" font-size="9.5" fill="#71717a">Validateurs / RPC</text>
+
+          <!-- Contributor B — Transit DZD (bottom) -->
+          <rect x="610" y="275" width="170" height="52" rx="8" fill="#211a00" stroke="#fbbf24" stroke-width="1.5"/>
+          <text x="695" y="297" text-anchor="middle" font-size="11" fill="#fbbf24" font-weight="700">DZD Transit</text>
+          <text x="695" y="313" text-anchor="middle" font-size="9.5" fill="#71717a">Backbone / Routage</text>
+
+          <!-- WAN Link A: Edge ↔ Transit (vertical, left side) -->
+          <line x1="125" y1="117" x2="125" y2="275" stroke="#a78bfa" stroke-width="2" stroke-dasharray="6,4"/>
+          <text x="80" y="200" font-size="9.5" fill="#a78bfa" font-weight="600">WAN Link</text>
+          <text x="80" y="213" font-size="9" fill="#71717a">(même contributeur)</text>
+
+          <!-- WAN Link B: Edge ↔ Transit (vertical, right side) -->
+          <line x1="695" y1="117" x2="695" y2="275" stroke="#a78bfa" stroke-width="2" stroke-dasharray="6,4"/>
+          <text x="700" y="200" font-size="9.5" fill="#a78bfa" font-weight="600">WAN Link</text>
+          <text x="700" y="213" font-size="9" fill="#71717a">(même contributeur)</text>
+
+          <!-- DZX Links: Transit A ↔ DZX -->
+          <line x1="210" y1="301" x2="325" y2="195" stroke="#22d3ee" stroke-width="2"/>
+          <text x="248" y="262" font-size="9" fill="#22d3ee" font-weight="600">DZX Link</text>
+
+          <!-- DZX Links: Transit B ↔ DZX -->
+          <line x1="610" y1="301" x2="495" y2="195" stroke="#22d3ee" stroke-width="2"/>
+          <text x="516" y="262" font-size="9" fill="#22d3ee" font-weight="600">DZX Link</text>
+
+          <!-- Validators A -->
+          <ellipse cx="40" cy="91" rx="18" ry="14" fill="#0f172a" stroke="#60a5fa" stroke-width="1.2"/>
+          <text x="40" y="95" text-anchor="middle" font-size="8" fill="#60a5fa">VAL</text>
+          <line x1="58" y1="91" x2="40" y2="91" stroke="#60a5fa" stroke-width="1" stroke-dasharray="3,2"/>
+
+          <ellipse cx="40" cy="115" rx="18" ry="14" fill="#0f172a" stroke="#60a5fa" stroke-width="1.2"/>
+          <text x="40" y="119" text-anchor="middle" font-size="8" fill="#60a5fa">RPC</text>
+          <line x1="58" y1="115" x2="40" y2="115" stroke="#22d3ee" stroke-width="1" stroke-dasharray="3,2"/>
+
+          <!-- Validators B -->
+          <ellipse cx="780" cy="91" rx="18" ry="14" fill="#0f172a" stroke="#60a5fa" stroke-width="1.2"/>
+          <text x="780" y="95" text-anchor="middle" font-size="8" fill="#60a5fa">VAL</text>
+          <line x1="762" y1="91" x2="780" y2="91" stroke="#60a5fa" stroke-width="1" stroke-dasharray="3,2"/>
+
+          <ellipse cx="780" cy="115" rx="18" ry="14" fill="#0f172a" stroke="#60a5fa" stroke-width="1.2"/>
+          <text x="780" y="119" text-anchor="middle" font-size="8" fill="#60a5fa">RPC</text>
+          <line x1="762" y1="115" x2="780" y2="115" stroke="#22d3ee" stroke-width="1" stroke-dasharray="3,2"/>
+
+          <!-- Legend -->
+          <line x1="30" y1="360" x2="60" y2="360" stroke="#a78bfa" stroke-width="2" stroke-dasharray="6,4"/>
+          <text x="68" y="364" font-size="10" fill="#a1a1aa">WAN Link (même contributeur)</text>
+          <line x1="290" y1="360" x2="320" y2="360" stroke="#22d3ee" stroke-width="2"/>
+          <text x="328" y="364" font-size="10" fill="#a1a1aa">DZX Link (contributeurs différents)</text>
+          <line x1="560" y1="360" x2="590" y2="360" stroke="#60a5fa" stroke-width="1.2" stroke-dasharray="3,2"/>
+          <text x="598" y="364" font-size="10" fill="#a1a1aa">Validateur / RPC</text>
+        </svg>
+      </section>
+
+      <!-- SLIDE 6: Sous le capot -->
+      <section>
+        <h2>Sous le Capot : <span class="highlight">3 mécanismes clés</span></h2>
+        <div style="display: flex; flex-direction: column; gap: 0.9em;">
           <div class="card" style="border-color: #22d3ee30;">
-            <div class="card-label highlight">VXLAN — Overlay L2</div>
-            <p>Encapsule les trames Ethernet dans UDP:4789. VNI 24 bits = 16M réseaux virtuels.
-              Jumbo frames MTU 9000 pour absorber le surcoût de ~50 octets.</p>
+            <div style="display:flex;align-items:center;gap:0.6em;margin-bottom:0.4em;">
+              <span class="card-label highlight" style="margin:0;">Tunnel réseau</span>
+              <span class="dim" style="font-size:0.65em;font-family:var(--r-code-font);">VXLAN</span>
+            </div>
+            <p>Les données voyagent dans une <strong style="color:#fafafa;">enveloppe privée</strong>, invisible depuis l'extérieur. Personne sur l'internet public ne peut voir ni intercepter le trafic des validateurs.</p>
           </div>
           <div class="card" style="border-color: #a78bfa30;">
-            <div class="card-label highlight-violet">BGP — Routage Inter-DZD</div>
-            <p>iBGP avec ASN privé 65342. Quand un validateur se connecte à un Edge DZD,
-              sa route est automatiquement propagée sur tout le mesh. IS-IS en interne pour une convergence rapide.</p>
+            <div style="display:flex;align-items:center;gap:0.6em;margin-bottom:0.4em;">
+              <span class="card-label highlight-violet" style="margin:0;">Carte GPS automatique</span>
+              <span class="dim" style="font-size:0.65em;font-family:var(--r-code-font);">BGP</span>
+            </div>
+            <p>Dès qu'un validateur se connecte, <strong style="color:#fafafa;">tout le réseau sait comment l'atteindre</strong> en quelques secondes — sans configuration manuelle.</p>
           </div>
           <div class="card" style="border-color: #fbbf2430;">
-            <div class="card-label highlight-amber">VRF — Isolation du Trafic</div>
-            <p>Tables de routage isolées sur le même switch :
-              <code>dz-prod</code> (blocs, shreds, votes) vs <code>dz-mgmt</code> (SSH, monitoring).
-              Un pic de monitoring ne peut pas affecter le consensus.</p>
+            <div style="display:flex;align-items:center;gap:0.6em;margin-bottom:0.4em;">
+              <span class="card-label highlight-amber" style="margin:0;">Voies séparées</span>
+              <span class="dim" style="font-size:0.65em;font-family:var(--r-code-font);">VRF</span>
+            </div>
+            <p>Le trafic de <strong style="color:#fafafa;">consensus</strong> (blocs, votes) ne partage jamais la même voie que le trafic de maintenance. Un pic de monitoring <strong style="color:#fafafa;">ne peut pas ralentir le consensus.</strong></p>
           </div>
         </div>
       </section>
@@ -350,160 +450,144 @@
 
       <!-- SLIDE 8: Filtrage Edge -->
       <section>
-        <h2>Filtrage Edge : <span class="highlight-green">la fonctionnalité killer</span></h2>
-        <div class="grid-2" style="margin-bottom: 1em;">
+        <h2>Filtrage Edge : <span class="highlight-green">moins de bruit = moins de slots ratés</span></h2>
+        <div class="grid-2" style="margin-bottom: 0.8em;">
           <div class="card" style="border-color: #f8717130;">
             <div class="card-label highlight-red">Sans DZ</div>
             <p>Chaque validateur déduplique seul<br>
               1000× le même travail redondant<br>
-              CPU gaspillé sur du bruit<br>
-              Qualité de filtrage variable</p>
+              CPU gaspillé sur du bruit réseau<br>
+              → Slots ratés → vos tx expirent</p>
           </div>
           <div class="card" style="border-color: #34d39930;">
             <div class="card-label highlight-green">Avec DZ</div>
             <p>Dédupliqué <strong>une seule fois</strong> à l'edge (FPGA)<br>
-              Tout le monde reçoit uniquement des données propres<br>
               CPU libéré pour le consensus<br>
-              Qualité matérielle uniforme pour tous</p>
+              Slot skip rate réduit<br>
+              → Vos tx atterrissent plus souvent</p>
           </div>
         </div>
         <div class="grid-3">
           <div class="card">
             <div class="card-label highlight-green">Dédup Shreds</div>
-            <p>Doublons Turbine détectés par signature, éliminés</p>
+            <p>Doublons Turbine éliminés — le validateur traite chaque shred une seule fois</p>
           </div>
           <div class="card">
             <div class="card-label highlight-green">Validation Format</div>
-            <p>Paquets malformés rejetés au niveau réseau</p>
+            <p>Paquets malformés rejetés au niveau réseau — zéro CPU côté validateur</p>
           </div>
           <div class="card">
             <div class="card-label highlight-green">Rate Limiting</div>
-            <p>Par source, anti-flood — protège le consensus</p>
+            <p>Anti-flood par source — le consensus n'est jamais noyé sous du spam</p>
           </div>
         </div>
-        <p style="font-size: 0.65em; color: #71717a; margin-top: 1em;">
-          Non-discrétionnaire : aucune censure. Règles uniformes et transparentes appliquées à tout le trafic.
+        <p style="font-size: 0.65em; color: #71717a; margin-top: 0.8em;">
+          Non-discrétionnaire : règles uniformes et transparentes, aucune censure possible.
         </p>
       </section>
 
-      <!-- SLIDE 9: RPC + Multicast -->
+      <!-- SLIDE 9: RPC -->
       <section>
-        <h2>Pas Que les Validateurs — Les <span class="highlight">Nœuds RPC</span> Aussi</h2>
-        <ul style="font-size: 0.85em; margin-bottom: 1.2em;">
-          <li>RPC = passerelle lecture/écriture pour wallets, dApps, indexeurs</li>
-          <li>Mêmes avantages : shreds via fibre, dédup partagé, jitter minimal</li>
-          <li>Données de pointe de chaîne plus rapides, <code>sendTransaction</code> plus fiable</li>
-          <li>Moins de trafic parasite = réduction des coûts d'infra</li>
-        </ul>
-        <div class="card" style="text-align: center;">
-          <div class="card-label highlight-violet" style="text-align: center;">Multicast</div>
-          <div class="arrow-chain" style="margin-top: 0.5em;">
-            <span class="node" style="border-color: #a78bfa40;">
-              <span class="highlight-violet">Leader de Bloc</span><br>
-              <span class="dim" style="font-size: 0.8em;">émetteur</span>
-            </span>
-            <span class="arr">→</span>
-            <span class="node" style="border-color: #34d39940;">
-              <span class="highlight-green">Edge DZD</span><br>
-              <span class="dim" style="font-size: 0.8em;">dédup + réplication</span>
-            </span>
-            <span class="arr">→</span>
-            <span style="display: flex; flex-direction: column; gap: 0.3em;">
-              <span class="node" style="border-color: #60a5fa30;">
-                <span style="color: #60a5fa;">Validateur A</span>
-              </span>
-              <span class="node" style="border-color: #60a5fa30;">
-                <span style="color: #60a5fa;">Validateur B</span>
-              </span>
-              <span class="node" style="border-color: #22d3ee30;">
-                <span class="highlight">Nœud RPC</span>
-              </span>
-              <span class="node" style="border-color: #60a5fa30;">
-                <span style="color: #60a5fa;">Validateur C</span>
-              </span>
-            </span>
+        <h2>Votre <span class="highlight">Nœud RPC</span> sur DoubleZero</h2>
+        <p style="font-size: 0.76em; color: #a1a1aa; margin-bottom: 0.8em;">
+          Votre RPC est la porte d'entrée de vos apps sur Solana. Sa qualité détermine directement l'UX que vous livrez.
+        </p>
+        <div class="grid-3" style="margin-bottom: 0.8em;">
+          <div class="card" style="border-color: #22d3ee30;">
+            <div class="card-label highlight" style="font-family:var(--r-code-font);">getLatestBlockhash</div>
+            <p>Reçoit le blockhash du slot courant <strong style="color:#fafafa;">en avance</strong> — votre fenêtre de confirmation est maximale dès le départ.</p>
           </div>
-          <p style="margin-top: 0.5em; font-size: 0.7em;">un paquet entrant → N copies sortantes</p>
+          <div class="card" style="border-color: #34d39930;">
+            <div class="card-label highlight-green" style="font-family:var(--r-code-font);">sendTransaction</div>
+            <p>La tx atteint le leader via fibre privée — <strong style="color:#fafafa;">moins de drops</strong>, moins de retries, moins de logique d'erreur à écrire.</p>
+          </div>
+          <div class="card" style="border-color: #a78bfa30;">
+            <div class="card-label highlight-violet" style="font-family:var(--r-code-font);">getAccountInfo</div>
+            <p>État onchain plus frais grâce aux shreds livrés plus tôt — <strong style="color:#fafafa;">moins de lectures périmées</strong> dans vos simulations.</p>
+          </div>
+        </div>
+        <div class="card" style="border-color: #fbbf2430; font-size:0.8em;">
+          <div class="card-label highlight-amber">Pour les indexeurs & bots</div>
+          <p>Les shreds arrivent avant même la confirmation — votre indexeur ou votre bot de trading voit le changement d'état <strong style="color:#fafafa;">au même instant que les validateurs.</strong></p>
         </div>
       </section>
 
-      <!-- SLIDE 10: Stack Logiciel -->
+      <!-- SLIDE 10: Multicast — nouveau -->
       <section>
-        <h2>Stack Logiciel</h2>
-        <div class="arrow-chain" style="margin-bottom: 1.2em;">
-          <span class="node" style="border-color: #3b82f630;"><span style="color: #3b82f6;">Ledger</span></span>
-          <span class="arr">→</span>
-          <span class="node" style="border-color: #a78bfa30;"><span class="highlight-violet">Controller</span></span>
-          <span class="arr">→</span>
-          <span class="node" style="border-color: #22d3ee30;"><span class="highlight">Config Agent</span></span>
-          <span class="arr">→</span>
-          <span class="node" style="border-color: #34d39930;"><span class="highlight-green">DZD</span></span>
+        <h2><span class="gradient-text">Multicast</span> — <span class="highlight-amber">Vient de sortir ✦</span></h2>
+        <p style="font-size: 0.76em; color: #a1a1aa; margin-bottom: 0.7em;">
+          Avant : le leader envoyait ses shreds <strong style="color:#fafafa;">séparément à chaque destinataire</strong>.<br>
+          Maintenant : <strong style="color:#fafafa;">un seul envoi, répliqué simultanément</strong> vers tous les abonnés — validateurs <em>et</em> RPC.
+        </p>
+        <div class="grid-2" style="margin-bottom: 0.7em; align-items: center;">
+          <div class="card" style="border-color:#22d3ee30;">
+            <div class="arrow-chain" style="flex-direction:column; align-items:flex-start; gap:0.3em;">
+              <div style="display:flex;align-items:center;gap:0.4em;">
+                <span class="node" style="border-color: #a78bfa40;"><span class="highlight-violet">Leader</span> <span class="dim" style="font-size:0.75em;">1 envoi</span></span>
+                <span class="arr">→</span>
+                <span class="node" style="border-color: #34d39940;"><span class="highlight-green">Edge DZD</span> <span class="dim" style="font-size:0.75em;">réplique</span></span>
+              </div>
+              <div style="display:flex;gap:0.3em;padding-left:1em;">
+                <span class="node" style="border-color:#60a5fa30;padding:0.2em 0.5em;"><span style="color:#60a5fa;font-size:0.85em;">VAL A</span></span>
+                <span class="node" style="border-color:#60a5fa30;padding:0.2em 0.5em;"><span style="color:#60a5fa;font-size:0.85em;">VAL B</span></span>
+                <span class="node" style="border-color:#22d3ee30;padding:0.2em 0.5em;"><span class="highlight" style="font-size:0.85em;">RPC</span></span>
+                <span class="node" style="border-color:#60a5fa30;padding:0.2em 0.5em;"><span style="color:#60a5fa;font-size:0.85em;">VAL C</span></span>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:0.5em;">
+            <div class="card" style="border-color:#34d39930;">
+              <div class="card-label highlight-green">Pour votre RPC</div>
+              <p>Abonnez-vous en tant que Subscriber — votre nœud reçoit les shreds <strong style="color:#fafafa;">au même instant que les validateurs</strong>. Avantage compétitif maximal.</p>
+            </div>
+            <div class="card" style="border-color:#fbbf2430;">
+              <div class="card-label highlight-amber">Pour les bots & indexeurs</div>
+              <p>Voir le changement d'état <strong style="color:#fafafa;">avant la confirmation</strong> — réagir en quelques ms, pas en quelques slots.</p>
+            </div>
+          </div>
         </div>
+        <div class="grid-3" style="font-size:0.8em;">
+          <div class="card">
+            <div class="card-label highlight-green">Bande passante</div>
+            <p>Le leader émet comme s'il n'avait qu'un seul destinataire</p>
+          </div>
+          <div class="card">
+            <div class="card-label highlight-amber">Équité temporelle</div>
+            <p>Tous les abonnés reçoivent les shreds strictement au même instant</p>
+          </div>
+          <div class="card">
+            <div class="card-label highlight-violet">Zéro redémarrage</div>
+            <p>Combinable avec IBRL — activation à chaud sur votre validateur/RPC existant</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- SLIDE 11: Ce que DZ débloque -->
+      <section>
+        <h2>Ce que DoubleZero <span class="gradient-text">débloque pour Solana</span></h2>
+        <p style="font-size: 0.76em; color: #a1a1aa; margin-bottom: 0.8em;">
+          DoubleZero n'est pas juste une optimisation réseau — c'est un <strong style="color:#fafafa;">changement de ce qui est possible</strong> sur Solana.
+        </p>
         <div class="grid-2" style="margin-bottom: 0.8em;">
-          <div class="card">
-            <div class="card-label highlight-violet">Controller</div>
-            <p>Lit l'état onchain → dérive la config pour chaque DZD</p>
+          <div class="card" style="border-color:#22d3ee30;">
+            <div class="card-label highlight">Fair Sequencing</div>
+            <p>L'équité temporelle rend réalisable un ordonnancement des transactions basé sur l'heure d'arrivée réelle — et non sur les tips. Base d'un marché financier truly fair.</p>
           </div>
-          <div class="card">
-            <div class="card-label highlight">Config Agent</div>
-            <p>Tourne sur chaque DZD. Poll → diff → apply</p>
+          <div class="card" style="border-color:#34d39930;">
+            <div class="card-label highlight-green">Cancel-Before-Fill</div>
+            <p>Les market makers peuvent annuler leurs ordres <strong style="color:#fafafa;">avant</strong> qu'ils soient exécutés — prérequis #1 de Toly pour le Nasdaq décentralisé.</p>
           </div>
-          <div class="card">
-            <div class="card-label highlight-green">Telemetry Agent</div>
-            <p>Sondes TWAMP → métriques signées → soumises onchain</p>
+          <div class="card" style="border-color:#a78bfa30;">
+            <div class="card-label highlight-violet">Ordres Limites On-Chain</div>
+            <p>Des spreads plus serrés, des carnets d'ordres on-chain viables, une liquidité plus profonde — directement accessible à vos protocoles DeFi.</p>
           </div>
-          <div class="card">
-            <div class="card-label highlight-amber">doublezerod</div>
-            <p>Daemon côté validateur/RPC. Gère le tunnel GRE + routage</p>
-          </div>
-        </div>
-        <div class="grid-3">
-          <div class="card">
-            <div class="card-label highlight-amber" style="font-size: 0.6em;">IBRL</div>
-            <p style="font-size: 0.8em;">Connexion sans redémarrer le validateur</p>
-          </div>
-          <div class="card">
-            <div class="card-label highlight" style="font-size: 0.6em;">CYOA</div>
-            <p style="font-size: 0.8em;">GRE/DIA, Fabric ou Peering Privé</p>
-          </div>
-          <div class="card">
-            <div class="card-label highlight-violet" style="font-size: 0.6em;">Multicast</div>
-            <p style="font-size: 0.8em;">Publisher + Subscriber, combinable avec IBRL</p>
+          <div class="card" style="border-color:#fbbf2430;">
+            <div class="card-label highlight-amber">Infrastructure Transparente</div>
+            <p>Tout l'état du réseau (latence, jitter, topologie) est <strong style="color:#fafafa;">onchain et auditable</strong>. Vous pouvez vérifier la qualité du réseau que vous utilisez.</p>
           </div>
         </div>
-      </section>
-
-      <!-- SLIDE 11: Couche Onchain -->
-      <section>
-        <h2>Couche Onchain</h2>
-        <p style="font-size: 0.8em; color: #a1a1aa; margin-bottom: 1em;">
-          Tout l'état du réseau vit onchain — transparent et auditable par tous.
-        </p>
-        <div class="grid-3" style="margin-bottom: 1em;">
-          <div class="card">
-            <div class="card-label highlight">Devices</div>
-            <p>Type, préfixes, interfaces, capacité max</p>
-          </div>
-          <div class="card">
-            <div class="card-label highlight-violet">Liens</div>
-            <p>Endpoints, statut, paramètres</p>
-          </div>
-          <div class="card">
-            <div class="card-label highlight-green">Télémétrie</div>
-            <p>Latence, jitter, perte de paquets — signés</p>
-          </div>
-        </div>
-        <div class="grid-2">
-          <div class="card">
-            <div class="card-label highlight-amber">Token 2Z</div>
-            <p><strong style="color: #fafafa;">Frais</strong> : validateurs/RPC paient en SOL (auto-swap) ou 2Z<br>
-              <strong style="color: #fafafa;">Récompenses</strong> : les contributeurs gagnent du 2Z pour leur bande passante</p>
-          </div>
-          <div class="card">
-            <div class="card-label" style="color: #60a5fa;">Clés Séparées</div>
-            <p><strong style="color: #fafafa;">Service Key</strong> — identité du contributeur (ops CLI)<br>
-              <strong style="color: #fafafa;">Metrics Publisher Key</strong> — signe les métriques (isolée)</p>
-          </div>
+        <div class="card" style="text-align:center; font-size:0.75em; border-color:#22d3ee20;">
+          <p style="margin:0; color:#71717a;">Token <code>2Z</code> — frais payés en SOL ou 2Z par les validateurs/RPC · Récompenses pour les contributeurs de bande passante</p>
         </div>
       </section>
 
