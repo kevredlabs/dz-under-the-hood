@@ -255,28 +255,16 @@
       <!-- SLIDE 4: Qu'est-ce que DoubleZero -->
       <section>
         <h2>Qu'est-ce que <span class="gradient-text">DoubleZero</span> ?</h2>
-        <div class="card" style="border-color: #22d3ee40; margin-bottom: 0.8em; text-align: center; padding: 0.9em 1.5em; background: linear-gradient(135deg, #f0fdfa 0%, #f9fafb 100%);">
-          <p style="font-size: 0.92em; margin: 0; line-height: 1.75; color: #374151;">
-            L'internet public, c'est une <span class="highlight-red">route nationale</span> partagée avec tout le monde.<br>
-            DoubleZero, c'est une <span class="highlight-green">autoroute privée</span> réservée aux validateurs Solana —<br>
-            <strong style="color: #111827;">plus courte, sans détours, sans embouteillages.</strong>
-          </p>
+        <div style="text-align: center; margin-bottom: 0.5em;">
+          <img src="medias/DZ_reseau.png" alt="Réseau DoubleZero — distribution globale" style="max-height: 260px; width: auto; border-radius: 8px; border: 1px solid #e5e7eb;">
         </div>
-        <div class="grid-2" style="margin-bottom: 0.7em;">
-          <div class="card card-compact" style="border-color: #05966930;">
-            <div class="card-label highlight-green">Réseau</div>
-            <ul style="font-size: 0.88em;">
-              <li>Fibre privé décentralisé — overlay sur fibres sous-utilisées</li>
-              <li>Contributeurs récompensés en <code>2Z</code></li>
-            </ul>
-          </div>
-          <div class="card card-compact" style="border-color: #7c3aed30;">
-            <div class="card-label highlight-violet">Équipe &amp; financement</div>
-            <p style="font-size: 0.88em; margin: 0;">Fondé par <strong>Austin Federa</strong> (ex-Solana Foundation), <strong>Andrew McConnell</strong>, <strong>Mateo Ward</strong>. 28M$ levés — Multicoin Capital, Dragonfly Capital.</p>
-          </div>
-        </div>
-        <div class="card" style="text-align: center; padding: 0.6em 1em; border-color: #0891b240;">
-          <a href="https://data.malbeclabs.com/topology/globe" target="_blank" rel="noopener" style="color: #0891b2; font-weight: 600; text-decoration: none; font-size: 0.95em;">Voir la topologie du réseau en direct — data.malbeclabs.com/topology/globe</a>
+        <ul style="font-size: 0.82em; margin-bottom: 0.6em;">
+          <li>L'internet public = <span class="highlight-red">route nationale</span> partagée · DoubleZero = <span class="highlight-green">autoroute privée</span> pour validateurs Solana — plus courte, sans embouteillages</li>
+          <li>Réseau <strong>fibre privé décentralisé</strong> — overlay sur fibres sous-utilisées · Contributeurs récompensés en tokens 2Z</li>
+          <li>Fondé par <strong>Austin Federa</strong> (ex-Solana Foundation), <strong>Andrew McConnell</strong>, <strong>Mateo Ward</strong> · 28M$ levés — Multicoin Capital, Dragonfly Capital</li>
+        </ul>
+        <div class="source-link">
+          Source : <a href="https://data.malbeclabs.com/topology/globe" target="_blank" rel="noopener">data.malbeclabs.com/topology/globe — Topologie du réseau en direct</a>
         </div>
       </section>
       <!-- SLIDE 5: Architecture Réseau -->
@@ -399,7 +387,7 @@
                   <div class="card-label highlight">Block propagation — le flux sur la route</div>
                   <ul style="font-size: 0.9em;">
                     <li><strong style="color:#fafafa;">Shreds</strong> = fragments de bloc</li>
-                    <li>Circulent via <strong style="color:#fafafa;">IBRL ou Multicast</strong></li>
+                    <li>Circulent grâce à Turbine en <strong style="color:#fafafa;">IBRL ou Multicast</strong></li>
                   </ul>
                 </div>
               </div>
@@ -437,7 +425,28 @@
             <img src="medias/schema_DZ.jpeg" alt="Schéma Executed Blocks / Consensus — Inner Ring, Outer Ring, Member RPC/Validator" style="max-height: 380px; width: auto; border-radius: 8px; border: 1px solid #e5e7eb;">
           </div>
         </div>
+        <div class="source-link">
+          Source : <a href="https://doublezero.xyz/whitepaper.pdf" target="_blank" rel="noopener">DoubleZero Protocol — Whitepaper (doublezero.xyz/whitepaper.pdf)</a>
+        </div>
       </section>
+
+      <!-- SLIDE 12b: Qu'est-ce que Turbine -->
+      <section>
+        <h2>Le protocole <span class="highlight">Turbine</span></h2>
+        <p style="font-size: 0.78em; color: #a1a1aa; margin-bottom: 0.5em;">Protocole de propagation des blocs sur Solana — diffusion en arbre pour scaler au-delà d’un simple broadcast.</p>
+        <div style="text-align: center; margin-bottom: 0.5em;">
+          <img src="medias/turbine.png" alt="Schéma Turbine — propagation des shreds en arbre" style="max-height: 320px; width: auto; border-radius: 8px; border: 1px solid #e5e7eb;">
+        </div>
+        <ul style="font-size: 0.82em;">
+          <li>Le <strong>leader</strong> découpe le bloc en <strong>shreds</strong> et les envoie à une première couche de nœuds</li>
+          <li>Chaque nœud relaie vers la couche suivante — structure en <strong>arbre</strong>, pas un envoi direct à tous</li>
+          <li>Mais Turbine est aveugle à la position géographique des validateurs...</li>
+        </ul>
+        <div class="source-link">
+          Référence : <a href="https://doublezero.xyz/journal/scaling-solana-from-turbine-to-multicast" target="_blank" rel="noopener">DoubleZero — Scaling Solana: From Turbine to Multicast</a>
+        </div>
+      </section>
+
       <!-- SLIDE 13: Turbine & DZ en IBRL classique -->
       <section>
         <h2>DZ en mode <span class="highlight">IBRL</span></h2>
@@ -451,30 +460,60 @@
         </ul>
       </section>
 
-      <!-- SLIDE 14: Multicast vs Turbine -->
+      <!-- SLIDE 13b: Multicast (schéma Turbine + Multicast) -->
       <section>
-        <h2>IBRL vs <span class="highlight">Multicast</span></h2>
+        <h2><span class="gradient-text">Multicast</span> sur DZ</h2>
+        <p style="font-size: 0.78em; color: #a1a1aa; margin-bottom: 0.5em;">Un envoi du leader vers un groupe multicast → le réseau DZ réplique vers tous les abonnés (validateurs et RPC).</p>
         <div style="text-align: center; margin-bottom: 0.5em;">
-          <img src="medias/multicast.png" alt="Multicast: Leader envoie directement à tous les nœuds" style="max-height: 320px; width: auto; border-radius: 8px; border: 1px solid #e5e7eb;">
+          <img src="medias/multicast_turbine.png" alt="Schéma Multicast et Turbine — un envoi, réplication vers les abonnés" style="max-height: 340px; width: auto; border-radius: 8px; border: 1px solid #e5e7eb;">
         </div>
         <ul style="font-size: 0.82em;">
-          <li><strong style="color:#a78bfa;">Multicast</strong> (schéma ci-dessus) : Leader → réseau DZ → envoi direct à chaque validateur</li>
-          <li><strong style="color:#22d3ee;">Un émetteur, N récepteurs</strong> et pas d’arbre de relais</li>
-    
+          <li>Leader publie les shreds <strong>une fois</strong> vers le groupe multicast DZ, communication plus efficace</li>
+          <li>Réplication simultanée vers tous les abonnés — plus d'arbre de relais par couches</li>
+          <li>Livraison géographiquement optimisée et plus juste par le réseau DZ</li>
+        </ul>
+        <div class="source-link">
+          Vidéo : <a href="https://www.youtube.com/watch?v=deU1tgf4cDc&t=137s" target="_blank" rel="noopener">YouTube — Multicast sur DZ</a>
+        </div>
+      </section>
+
+      <!-- SLIDE 14b: Économie des shreds (avant Edge) -->
+      <section>
+        <h2>L'économie des <span class="highlight">shreds</span> — avant le Multicast et Edge</h2>
+        <div style="text-align: center; margin-bottom: 0.5em;">
+          <img src="medias/shreds_détails.png" alt="Validators rely on shreds to reconstruct blocks, stay in sync, and vote onchain" style="max-height: 260px; width: auto; border-radius: 8px; border: 1px solid #e5e7eb;">
+        </div>
+        <ul style="font-size: 0.82em; margin-bottom: 0.6em;">
+          <li>Les shreds ont une <strong>valeur énorme</strong> pour les arbitrageurs, les liquidity providers et les traders : ils reflètent l'état le plus récent du réseau</li>
+          <li><strong>Traders & RPC</strong> veulent un accès plus rapide aux données (avant confirmation) - forte demande</li>
+          <li><strong>Validateurs les plus stakés</strong> reçoivent les shreds en premier et les vendent aux traders via des deals privés</li>
         </ul>
       </section>
 
       <!-- SLIDE 15: DoubleZero Edge -->
       <section>
-        <h2><span class="gradient-text">DoubleZero Edge</span></h2>
+        <h2><span class="gradient-text">DoubleZero Edge</span> : Un nouveau marché des données</h2>
         <div style="text-align: center; margin-bottom: 0.5em;">
-          <img src="medias/DZ_edge.png" alt="DoubleZero Edge: validateurs, leader, multicast group, réseau DZ, revenus" style="max-height: 300px; width: auto; border-radius: 8px; border: 1px solid #e5e7eb;">
+          <img src="medias/DZ_edge_marché.png" alt="Traders purchase access to the feed, revenue shared with validators who contribute data" style="max-height: 300px; width: auto; border-radius: 8px; border: 1px solid #e5e7eb;">
         </div>
         <ul style="font-size: 0.82em;">
-          <li>DZ Edge: couche de transport <strong style="color:#fafafa;">parallèle</strong> · accès plus rapide aux shreds pour les traders · nouvelle source de revenus pour les validateurs</li>
-          <li>Multicast : le leader publie les shreds <strong style="color:#fafafa;">une fois</strong> vers un groupe DZ → le réseau DZ livre de façon géographiquement optimisée à tous les abonnés</li>
-          <li>Pour les validateurs : accès plus rapide aux shreds du leader  + revenus en fournissant ces données via le réseau DZ</li>
+          <li> Grâce au multicast, tous les validateurs (même petits) peuvent monétiser leurs shreds</li>
+          <li>DZ Edge: accès plus rapide aux shreds pour les traders + nouvelle source de revenus pour les validateurs</li>
+          <li>L'impact sur le Solana reste à mesurer, Edge n'est pas encore live
+          </li>
         </ul>
+        <div class="source-link">
+          Référence : <a href="https://doublezero.xyz/journal/doublezero-introduces-edge-a-new-real-time-market-data-platform" target="_blank" rel="noopener">DoubleZero — Introduces Edge, A New Real-Time Market Data Platform</a>
+        </div>
+      </section>
+
+      <!-- SLIDE: Merci -->
+      <section style="text-align: center;">
+        <h2>Merci!</h2>
+        <div style="margin: 1.5em 0;">
+          <img src="medias/logo_kevred.jpg" alt="Kevred" style="max-height: 180px; width: auto; border-radius: 8px;">
+        </div>
+        <p style="font-size: 1em; color: #111827; font-weight: 500;">stake with us</p>
       </section>
 
     </div>
