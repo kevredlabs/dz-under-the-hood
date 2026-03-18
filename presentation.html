@@ -236,7 +236,6 @@
               <li>BGP optimise la disponibilité, pas la vitesse</li>
               <li>10-15 sauts FAI par paire de validateurs</li>
               <li>Jitter imprévisible (50–200 ms)</li>
-              <li>Chaque validateur déduplique seul (×1000)</li>
               <li> Pas de multicast </li>
             </ul>
           </div>
@@ -375,20 +374,27 @@
       </section>
             <!-- SLIDE 12: Communication validateurs — route & feux -->
             <section>
-              <h2>Communication entre validateurs : <span class="highlight">ce qui circule sur DZ</span></h2>
-              <div class="grid-2" style="margin-bottom: 0.8em;">
+              <h2>ce qui circule sur DZ</span></h2>
+              <div class="grid-3" style="margin-bottom: 0.8em;">
                 <div class="card card-compact" style="border-color: #a78bfa30;">
-                  <div class="card-label highlight-violet">Gossip — les « feux » de signalisation</div>
+                  <div class="card-label highlight-violet">Gossip</div>
                   <ul style="font-size: 0.9em;">
                     <li>Qui sont les validateurs connectés ?</li>
                     <li>Qui est qui ?</li>
                   </ul>
                 </div>
                 <div class="card card-compact" style="border-color: #22d3ee30;">
-                  <div class="card-label highlight">Block propagation — le flux sur la route</div>
+                  <div class="card-label highlight">Block propagation </div>
                   <ul style="font-size: 0.9em;">
                     <li><strong style="color:#fafafa;">Shreds</strong> = fragments de bloc</li>
                     <li>Circulent grâce à Turbine en <strong style="color:#fafafa;">IBRL ou Multicast</strong></li>
+                  </ul>
+                </div>
+                <div class="card card-compact" style="border-color: #34d39930;">
+                  <div class="card-label highlight-green">RPC</div>
+                  <ul style="font-size: 0.9em;">
+                    <li>Les RPC peuvent se connecter à DZ</li>
+                    <li>Communication des données (état, shreds) via le réseau</li>
                   </ul>
                 </div>
               </div>
@@ -419,7 +425,7 @@
             </div>
             <div class="step-row">
               <div class="step-dot" style="background: #fbbf24;">5</div>
-              <div><strong>Réception des shreds par les autres validateurs</strong><p>Jitter minimal → reconstruction rapide du bloc</p></div>
+              <div><strong>Réception des shreds par les autres validateurs</strong><p>Jitter minimal + meilleure stabilité</p></div>
             </div>
           </div>
           <div style="text-align: center; flex-shrink: 0;">
@@ -494,8 +500,13 @@
       <!-- SLIDE 15: DoubleZero Edge -->
       <section>
         <h2><span class="gradient-text">DoubleZero Edge</span> : Un nouveau marché des données</h2>
-        <div style="text-align: center; margin-bottom: 0.5em;">
-          <img src="medias/DZ_edge_marché.png" alt="Traders purchase access to the feed, revenue shared with validators who contribute data" style="max-height: 300px; width: auto; border-radius: 8px; border: 1px solid #e5e7eb;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.8em; margin-bottom: 0.6em; align-items: center;">
+          <div style="text-align: center;">
+            <img src="medias/DZ_edge_marché.png" alt="Traders purchase access to the feed, revenue shared with validators who contribute data" style="max-height: 260px; width: auto; border-radius: 8px; border: 1px solid #e5e7eb;">
+          </div>
+          <div style="text-align: center;">
+            <img src="medias/Edge_business.png" alt="Solana Shreds on DZ Edge Revenue — répartition Burn 10%, Network Contributors 50%, Validators 32.5%, Client Teams 17.5%" style="max-height: 260px; width: auto; border-radius: 8px; border: 1px solid #e5e7eb;">
+          </div>
         </div>
         <ul style="font-size: 0.82em;">
           <li>DZ Edge: accès en théorie plus rapide aux shreds pour les traders + nouvelle source de revenus pour les validateurs</li>
@@ -514,7 +525,9 @@
         <div style="margin: 1.5em 0;">
           <img src="medias/logo_kevred.jpg" alt="Kevred" style="max-height: 180px; width: auto; border-radius: 8px;">
         </div>
-        <p style="font-size: 1em; color: #111827; font-weight: 500;">stake with us</p>
+        <p style="font-size: 0.75em; margin-top: 0.8em;">
+          Stakez vos SOL sur  <a href="https://app.jpool.one/direct-staking?vote=Gvt8s5Bwnhg4G27VbnT1Zkfh7Jsztq6CNvZcc5anPonS" target="_blank" rel="noopener" style="color: #0891b2;">Gvt8s5Bwnhg4G27VbnT1Zkfh7Jsztq6CNvZcc5anPonS</a>
+        </p>
       </section>
 
     </div>
