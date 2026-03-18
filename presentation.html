@@ -188,7 +188,7 @@
         <div style="text-align: center; margin-bottom: 0.6em;">
           <img src="medias/logo_DZ.jpg" alt="DoubleZero" style="height: 220px; width: auto;">
         </div>
-        <h2 style="margin-top: 0.6em; font-size: 1.8em;">Une infra mondiale de fibres au service de <span class="highlight">Solana</span></h2>
+        <h2 style="margin-top: 0.6em; font-size: 1.8em;">Un réseau mondiale de fibres optiques au service de <span class="highlight">Solana</span></h2>
         <div style="text-align: center; margin-top: 2em;">
           <a href="https://kevred.com" target="_blank" rel="noopener"><img src="medias/logo_kevred.jpg" alt="Kevred" style="height: 120px; width: auto;"></a>
         </div>
@@ -199,7 +199,7 @@
 
       <!-- SLIDE 2: La Vision -->
       <section>
-        <h2>La Vision : <span class="highlight">Nasdaq Décentralisé</span></h2>
+        <h2>La Vision de Solana : <span class="highlight">Nasdaq Décentralisé</span></h2>
         <p style="font-size: 0.8em; color: #a1a1aa; margin-bottom: 1.2em;">
           Toly & Max Resnick (Anza) — pour battre le NYSE sur les spreads,<br>
           3 prérequis sont identifiés :
@@ -229,7 +229,7 @@
       <!-- SLIDE 3: Le Problème -->
       <section>
         <h2>Le Problème : <span class="highlight-red">l'internet public n'est pas fait pour les blockchains à haute performance</span></h2>
-        <div class="vs-grid">
+        <div class="vs-grid" style="align-items: center;">
           <div class="card" style="border-color: #f8717130;">
             <div class="card-label highlight-red">Internet Public — les faits</div>
             <ul style="font-size: 0.85em;">
@@ -237,6 +237,7 @@
               <li>10-15 sauts FAI par paire de validateurs</li>
               <li>Jitter imprévisible (50–200 ms)</li>
               <li>Chaque validateur déduplique seul (×1000)</li>
+              <li> Pas de multicast </li>
             </ul>
           </div>
           <div class="vs-divider">→</div>
@@ -244,7 +245,7 @@
             <div class="card-label highlight-red">Problèmes sur Solana</div>
             <ul style="font-size: 0.85em;">
 
-              <li>Propagation des blocs lente et irrégulière</li>
+              <li>Propagation des blocs entre validateurs lente et irrégulière</li>
               <li>MEV asymétrique : certains acteurs reçoivent les données plus vite</li>
               <li>RPC et apps voient un état onchain en retard</li>
             </ul>
@@ -259,8 +260,8 @@
           <img src="medias/DZ_reseau.png" alt="Réseau DoubleZero — distribution globale" style="max-height: 260px; width: auto; border-radius: 8px; border: 1px solid #e5e7eb;">
         </div>
         <ul style="font-size: 0.82em; margin-bottom: 0.6em;">
-          <li>L'internet public = <span class="highlight-red">route nationale</span> partagée · DoubleZero = <span class="highlight-green">autoroute privée</span> pour validateurs Solana — plus courte, sans embouteillages</li>
-          <li>Réseau <strong>fibre privé décentralisé</strong> — overlay sur fibres sous-utilisées · Contributeurs récompensés en tokens 2Z</li>
+          <li>Réseau <strong>fibre privé décentralisé</strong> alimenté par des contributeurs de fibres indépendants et récompensés en tokens 2Z</li>
+          <li>L'internet public = <span class="highlight-red">route nationale</span> partagée · DoubleZero = <span class="highlight-green">autoroute privée</span> pour Solana — plus courte, sans embouteillages</li>
           <li>Fondé par <strong>Austin Federa</strong> (ex-Solana Foundation), <strong>Andrew McConnell</strong>, <strong>Mateo Ward</strong> · 28M$ levés — Multicoin Capital, Dragonfly Capital</li>
         </ul>
         <div class="source-link">
@@ -377,7 +378,7 @@
               <h2>Communication entre validateurs : <span class="highlight">ce qui circule sur DZ</span></h2>
               <div class="grid-2" style="margin-bottom: 0.8em;">
                 <div class="card card-compact" style="border-color: #a78bfa30;">
-                  <div class="card-label highlight-violet">Gossip — les « feux » de coordination</div>
+                  <div class="card-label highlight-violet">Gossip — les « feux » de signalisation</div>
                   <ul style="font-size: 0.9em;">
                     <li>Qui sont les validateurs connectés ?</li>
                     <li>Qui est qui ?</li>
@@ -402,7 +403,7 @@
           <div style="display: flex; flex-direction: column; gap: 0.3em;">
             <div class="step-row">
               <div class="step-dot" style="background: #a78bfa;">1</div>
-              <div><strong>Le leader produit un bloc</strong><p>Découpé en shreds pour la distribution via Turbine</p></div>
+              <div><strong>Le leader produit un bloc (flux continu)</strong><p>Découpé en shreds pour la distribution via Turbine</p></div>
             </div>
             <div class="step-row">
               <div class="step-dot" style="background: #22d3ee;">2</div>
@@ -484,8 +485,8 @@
           <img src="medias/shreds_détails.png" alt="Validators rely on shreds to reconstruct blocks, stay in sync, and vote onchain" style="max-height: 260px; width: auto; border-radius: 8px; border: 1px solid #e5e7eb;">
         </div>
         <ul style="font-size: 0.82em; margin-bottom: 0.6em;">
-          <li>Les shreds ont une <strong>valeur énorme</strong> pour les arbitrageurs, les liquidity providers et les traders : ils reflètent l'état le plus récent du réseau</li>
-          <li><strong>Traders & RPC</strong> veulent un accès plus rapide aux données (avant confirmation) - forte demande</li>
+          <li>Les shreds ont une <strong>valeur énorme</strong> pour les arbitrageurs, les liquidity providers, les traders et les MM : ils reflètent l'état le plus récent du réseau</li>
+          <li><strong>Tous ces acteurs</strong> veulent un accès plus rapide aux données (avant confirmation) - forte demande</li>
           <li><strong>Validateurs les plus stakés</strong> reçoivent les shreds en premier et les vendent aux traders via des deals privés</li>
         </ul>
       </section>
@@ -497,8 +498,8 @@
           <img src="medias/DZ_edge_marché.png" alt="Traders purchase access to the feed, revenue shared with validators who contribute data" style="max-height: 300px; width: auto; border-radius: 8px; border: 1px solid #e5e7eb;">
         </div>
         <ul style="font-size: 0.82em;">
+          <li>DZ Edge: accès en théorie plus rapide aux shreds pour les traders + nouvelle source de revenus pour les validateurs</li>
           <li> Grâce au multicast, tous les validateurs (même petits) peuvent monétiser leurs shreds</li>
-          <li>DZ Edge: accès plus rapide aux shreds pour les traders + nouvelle source de revenus pour les validateurs</li>
           <li>L'impact sur le Solana reste à mesurer, Edge n'est pas encore live
           </li>
         </ul>
